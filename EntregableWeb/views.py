@@ -1,8 +1,10 @@
 import sqlite3
+from xml.dom.minidom import Document
 from django.http import HttpResponse
 import pathlib
 from django.template import Template, Context
 from django.template import loader
+from django.shortcuts import render
 
 from Familiares.models import Familiar
 
@@ -17,30 +19,26 @@ def home(self):
     ''')
 
 def template(self):
-    familiares = [
-        {
-    'nombre':'Damian','nroFavorito':'19','fechaDeNac':'16/02/1969'
-    },
-    {
-    'nombre':'Matias','nroFavorito':'1','fechaDeNac':'25/10/1999'
-    },
-    {
-    'nombre':'Agustina','nroFavorito':'7','fechaDeNac':'21/05/2009'
-    }
-    ]
-    data = {'lista':familiares}
     planilla = loader.get_template('index.html')
-    documento = planilla.render(data)
+    documento = planilla.render()
     return HttpResponse(documento)
 
 def familiares(self):
+    Familia = []
     familiar1 = Familiar(nombre='Diego',apellido='Rindispager',edad=22,fechaDeNac='1980-05-22')
     familiar1.save()
+    Familia.append(familiar1)
     familiar2 = Familiar(nombre='Agustina',apellido='Toledo',edad=13,fechaDeNac='2009-05-5')
     familiar2.save()
+    Familia.append(familiar2)
     familiar3 = Familiar(nombre='Sofia',apellido='Toledo',edad=13,fechaDeNac='2009-08-5')
     familiar3.save()
-    documento1 = f'{familiar1.nombre} {familiar1.apellido} tiene {familiar1.edad} años porque nacio el {familiar1.fechaDeNac}'
-    documento2 = f'{familiar2.nombre} {familiar2.apellido} tiene {familiar2.edad} años porque nacio el {familiar2.fechaDeNac}'
-    documento3 = f'{familiar3.nombre} {familiar3.apellido} tiene {familiar3.edad} años porque nacio el {familiar3.fechaDeNac}'
-    return HttpResponse(documento1)
+    Familia.append(familiar3)
+    data = {'lista':Familia}
+    planilla = loader.get_template('familiares.html')
+    documento = planilla.render(data)
+    return HttpResponse(documento)
+    
+def listaFamiliares(request):
+    familiares = Familiar.objects.all()
+    return render(request,'lista.html',{'lista':familiares})

@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from EntregableWeb.views import familiares, home, template
+from EntregableWeb.views import familiares, home, listaFamiliares, template
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home),
     path('template/', template),
-    path('familiares/', familiares),
+    path('guardar_familiares/', familiares),
+    path('mostrar_familiares/', listaFamiliares),
 ]
